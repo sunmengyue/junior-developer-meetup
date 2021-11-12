@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function AboutPage() {
   return (
     <div>
@@ -6,6 +8,7 @@ export default function AboutPage() {
         in coding
       </h1>
       <p>Version: 1.0.0</p>
+      <Link href="/">Home</Link>
     </div>
   );
 }
