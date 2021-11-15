@@ -8,6 +8,8 @@ import Image from 'next/image';
 import Layout from '@/components/Layout';
 import { API_URL } from '@/config/index';
 import { formatDate } from '@/utils/formatDate';
+import Modal from '@/components/Modal';
+import ImageUpload from '@/components/ImageUpload';
 import styles from '@/styles/Form.module.css';
 
 export default function EditPage({ evt }) {
@@ -23,6 +25,8 @@ export default function EditPage({ evt }) {
   const [imgPreview, setImgPreview] = useState(
     evt.image ? evt.image.formats.thumbnail.url : null,
   );
+
+  const [showModal, setShowModal] = useState(false);
 
   const router = useRouter();
 
@@ -55,6 +59,13 @@ export default function EditPage({ evt }) {
       const evt = await res.json();
       router.push(`/events/${evt.slug}`);
     }
+  };
+
+  const uploadImage = async () => {
+    const res = await fetch(`${API_URL}/events/${evt.id}`);
+    const data = await res.json();
+    setImgPreview(data.image.formats.thumbnail.url);
+    setShowModal(false);
   };
 
   return (
@@ -139,10 +150,15 @@ export default function EditPage({ evt }) {
         <button
           className="btn-secondary"
           style={{ display: 'flex', alignItems: 'center' }}
+          onClick={() => setShowModal(true)}
         >
           <FaImage /> <span style={{ marginLeft: 5 }}>Set image</span>
         </button>
       </div>
+
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <ImageUpload evtId={evt.id} uploadImage={uploadImage} />
+      </Modal>
     </Layout>
   );
 }
